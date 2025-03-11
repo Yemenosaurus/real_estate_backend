@@ -9,6 +9,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\NewsletterController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -31,6 +32,11 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/sanctum/csrf-cookie', function () {
     return response()->json(['message' => 'CSRF cookie set']);
 });
+
+// Routes pour la newsletter (publiques)
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe']);
+Route::get('/newsletter/confirm/{token}', [NewsletterController::class, 'confirm']);
+Route::get('/newsletter/unsubscribe/{token}', [NewsletterController::class, 'unsubscribe']);
 
 // Routes protégées
 Route::middleware('auth:sanctum')->group(function () {

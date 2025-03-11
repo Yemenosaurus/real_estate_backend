@@ -12,7 +12,7 @@ use App\Models\EstateConfiguration;
 use App\Models\InspectionReaction;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-
+use Illuminate\Support\Facades\Hash;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -21,44 +21,59 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Create 10 users
-        $users = User::factory(10)->create();
+        // $users = User::factory(10)->create();
+        // create one user admin
+        $user = User::factory()->create([
+            'name' => 'Admin',
+            'email' => 'a@a.com',
+            'password' => Hash::make('a'),
+            'role_id' => 1
+        ]);
 
         // Create 3 roles
-        $roles = Role::factory(2)->create();
-
+        //$roles = Role::factory(2)->create();
+        // create one role admin et one role visitor
+        $role = Role::factory()->create([
+            'name' => 'admin',
+            'description' => 'Admin role'
+        ]);
+        $role = Role::factory()->create([
+            'name' => 'visitor',
+            'description' => 'Visitor role'
+        ]);
         // Create 20 estates with random users and their configurations
-        $estates = Estate::factory(20)->create([
-            'user_id' => fn() => $users->random()->id
-        ])->each(function ($estate) {
-            // Chaque estate aura entre 1 et 4 configurations (étages)
-            EstateConfiguration::factory()
-                ->count(rand(1, 4))
-                ->create([
-                    'estate_id' => $estate->id
-                ]);
-        });
+        // $estates = Estate::factory(20)->create([
+        //     'user_id' => fn() => $users->random()->id
+        // ])->each(function ($estate) {
+        //     // Chaque estate aura entre 1 et 4 configurations (étages)
+        //     EstateConfiguration::factory()
+        //         ->count(rand(1, 4))
+        //         ->create([
+        //             'estate_id' => $estate->id
+        //         ]);
+        // });
 
         // Create 60 images (approximately 3 per estate)
-        Image::factory(60)->create([
-            'estate_id' => fn() => $estates->random()->id
-        ]);
+        // Image::factory(60)->create([
+        //     'estate_id' => fn() => $estates->random()->id
+        // ]);
 
         // Create 40 likes with random users and estates
-        Like::factory(40)->create([
-            'user_id' => fn() => $users->random()->id,
-            'estate_id' => fn() => $estates->random()->id
-        ]);
+        // Like::factory(40)->create([
+        //     'user_id' => fn() => $users->random()->id,
+        //     'estate_id' => fn() => $estates->random()->id
+        // ]);
 
         // Create 30 property inspections
-        $inspections = PropertyInspection::factory(30)->create([
-            'user_id' => fn() => $users->random()->id,
-            'estate_id' => fn() => $estates->random()->id
-        ]);
+        // $inspections = PropertyInspection::factory(30)->create([
+        //     'user_id' => fn() => $users->random()->id,
+        //     'estate_id' => fn() => $estates->random()->id
+        // ]);
 
         // Create 10 inspection reactions
-        InspectionReaction::factory(10)->create([
-            'property_inspection_id' => fn() => $inspections->random()->id,
-            'estate_configuration_id' => fn() => EstateConfiguration::inRandomOrder()->first()->id
-        ]);
+        // InspectionReaction::factory(10)->create([
+        //     'property_inspection_id' => fn() => $inspections->random()->id,
+        //     'estate_configuration_id' => fn() => EstateConfiguration::inRandomOrder()->first()->id
+        // ]);
     }
 }
