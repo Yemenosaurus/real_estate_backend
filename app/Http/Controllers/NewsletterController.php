@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\NewsletterConfirmation;
 
+
 class NewsletterController extends Controller
 {
     public function subscribe(Request $request)
