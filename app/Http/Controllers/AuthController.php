@@ -16,32 +16,35 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($request->only('email', 'password'))) {
+            $request->session()->regenerate();
+            
             $user = Auth::user();
+            $token = $user->createToken('auth-token')->plainTextToken;
             
             return response()->json([
                 'message' => 'Login successful',
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role_id' => $user->role_id,
-                    // Ajoutez d'autres champs si nécessaire
-                ]
+                'user' => $user,
+                'token' => $token
             ]);
         }
 
-        return response()->json([
-            'message' => 'Invalid credentials'
-        ], 401);
+        throw ValidationException::withMessages([
+            'email' => ['Les identifiants fournis sont incorrects.'],
+        ]);
     }
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        // Révoquer tous les tokens de l'utilisateur
+        if ($request->user()) {
+            $request->user()->tokens()->delete();
+        }
+
+        Auth::guard('web')->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return response()->json(['message' => 'Logout successful'], 200);
+        return response()->json(['message' => 'Déconnexion réussie']);
     }
 } 
