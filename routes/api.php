@@ -27,6 +27,8 @@ use App\Http\Controllers\NewsletterController;
 //     return $request->user();
 // });
 
+
+
 // Routes publiques
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/sanctum/csrf-cookie', function () {
